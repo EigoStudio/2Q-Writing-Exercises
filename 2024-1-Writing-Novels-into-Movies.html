@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Eiken 2nd Writing Worksheet</title>
+<style>
+    :root {
+        --bg-pink: #fdf2f4;
+        --accent-rose: #e198b4;
+        --azuki-red: #96514d;
+        --deep-rose: #a54e69;
+        --text-dark: #3a2e2e;
+        --base-font: "Hiragino Maru Gothic ProN", "Hiragino Maru Gothic Pro", "Yu Gothic", "Meiryo", sans-serif;
+    }
+
+    /* --- Screen Styles --- */
+    body { font-family: var(--base-font); background-color: var(--bg-pink); color: var(--text-dark); display: flex; flex-direction: column; align-items: center; padding: 20px; margin: 0; }
+    header, .container { max-width: 900px; width: 100%; }
+    h1 { font-size: 1.6rem; color: var(--deep-rose); border-bottom: 2px solid var(--accent-rose); display: inline-block; padding-bottom: 5px; text-align: center; }
+    
+    .topic-box { background: white; padding: 20px; border-radius: 15px; border-left: 5px solid var(--accent-rose); margin-bottom: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+    .control-panel { display: flex; justify-content: center; gap: 20px; background: white; padding: 12px; border-radius: 50px; border: 1.5px solid var(--accent-rose); margin-bottom: 20px; }
+    .tab-btn { padding: 8px 25px; border-radius: 20px; border: 1.5px solid var(--accent-rose); background: transparent; color: var(--deep-rose); cursor: pointer; font-weight: bold; font-family: var(--base-font); }
+    .tab-btn.active { background: var(--accent-rose); color: white; }
+    
+    .container { background: rgba(255, 255, 255, 0.8); padding: 40px; border-radius: 25px; text-align: center; }
+    .question-box { background: white; border-bottom: 3px solid var(--accent-rose); padding: 25px; border-radius: 15px; margin-bottom: 10px; min-height: 100px; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+    .screen-hint { color: var(--deep-rose); font-size: 0.85rem; font-weight: bold; display: block; margin-top: 5px; background: #fff; padding: 2px 10px; border-radius: 10px; border: 1px solid var(--accent-rose); }
+    
+    .choices-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px; }
+    .choice-btn, .word-btn { background: white; color: var(--deep-rose); border: 1.5px solid var(--accent-rose); padding: 18px; border-radius: 15px; font-size: 1.3rem; font-weight: bold; cursor: pointer; font-family: var(--base-font); }
+    
+    .answer-area { min-height: 80px; border: 2px dashed var(--accent-rose); border-radius: 15px; padding: 15px; margin-bottom: 20px; display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+    .answer-word { background: var(--deep-rose); color: white; padding: 8px 16px; border-radius: 10px; cursor: grab; font-size: 1.2rem; }
+    .answer-word.popped { background: transparent; color: var(--text-dark); border: none; font-size: 1.4rem; cursor: default; }
+    .word-btn.used { visibility: hidden; }
+    .action-btn { background: var(--deep-rose); color: white; border: none; padding: 15px 60px; border-radius: 40px; font-weight: bold; cursor: pointer; font-family: var(--base-font); }
+
+    /* --- Print Styles --- */
+    #print-area { display: none; }
+    @media print {
+        body { background: white !important; padding: 0 !important; }
+        .no-print, header, .container, .control-panel { display: none !important; }
+        #print-area { display: block !important; width: 100% !important; color: black !important; font-family: var(--base-font); }
+        .print-page { page-break-after: always; padding: 10mm; display: block !important; }
+        .print-header { border-bottom: 1px solid #000; margin-bottom: 10px; font-size: 1.2rem; font-weight: bold; }
+        .print-topic-sm { font-size: 0.85rem; border: 1px solid #000; padding: 8px; margin-bottom: 15px; line-height: 1.4; }
+        .print-item { margin-bottom: 30px; }
+        .print-q-text { font-weight: bold; font-size: 0.95rem; margin-bottom: 4px; display: block; }
+        .word-choices-box { font-style: italic; font-size: 0.8rem; display: block; margin-bottom: 4px; }
+        .print-line-full { border-bottom: 0.5px solid #000; height: 1.8rem; width: 100%; }
+        .vocab-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 30px; }
+        .vocab-row { display: flex; align-items: flex-end; margin-bottom: 25px; }
+        .vocab-jp { min-width: 150px; font-size: 0.9rem; }
+        .vocab-line { border-bottom: 0.5px solid #000; flex-grow: 1; height: 1.2rem; }
+    }
+</style>
+</head>
+<body>
+
+<header class="no-print">
+    <h1>英検2級 英作文対策</h1>
+    <div class="topic-box">
+        <strong>【TOPIC】</strong> Novels to Movies (Image / Income / Quality)
+    </div>
+    <div class="control-panel">
+        <button class="tab-btn active" id="tab-vocab" onclick="switchMode('vocab')">Vocab</button>
+        <button class="tab-btn" id="tab-reorder" onclick="switchMode('reorder')">Sentences</button>
+    </div>
+</header>
+
+<div class="container no-print">
+    <div class="question-box">
+        <div id="questionText">Loading...</div>
+        <div id="hintDisplay" class="screen-hint"></div>
+    </div>
+    <div id="interactive-area"></div>
+    <div id="resultMsg" style="margin: 15px; font-size: 1.5rem; font-weight: bold; color: var(--deep-rose);"></div>
+    <button class="action-btn" id="mainActionBtn" onclick="handleMainAction()" disabled>Check Answer</button>
+    <br>
+    <button onclick="window.print()" style="margin-top:30px; background:none; border:none; text-decoration:underline; cursor:pointer; color:var(--deep-rose); font-size: 0.9rem;">
+        ワークシートを印刷する
+    </button>
+</div>
+
+<div id="print-area">
+    <div class="print-page">
+        <div class="print-header">Vocabulary Worksheet</div>
+        <div class="print-topic-sm"><b>Topic:</b> Many novels are turned into movies. Do you think the number of such movies will increase in the future?</div>
+        <div id="print-vocab-list" class="vocab-grid"></div>
+    </div>
+    <div class="print-page">
+        <div class="print-header">Sentence Structure Worksheet</div>
+        <div class="print-topic-sm"><b>Points:</b> Image / Income / Quality</div>
+        <div id="print-sentence-list"></div>
+    </div>
+</div>
+
+<script>
+const vocabData = [
+    { jp: "収益を生み出す", en: "generate revenue" },
+    { jp: "～を惹きつける", en: "attract" },
+    { jp: "宣伝の費用", en: "advertising costs" },
+    { jp: "～のリスクを減らす", en: "reduce the risk of" },
+    { jp: "経済的な成功", en: "financial success" },
+    { jp: "実写版", en: "live-action version" },
+    { jp: "視覚的なイメージ", en: "visual images" },
+    { jp: "～の質を保証する", en: "guarantee the quality of" },
+    { jp: "～を基にしている", en: "be based on" },
+    { jp: "既存のファン層", en: "existing fan base" },
+    { jp: "素晴らしい脚本", en: "excellent script" },
+    { jp: "～に利益をもたらす", en: "bring profits to" },
+    { jp: "さらに", en: "Furthermore" },
+    { jp: "～に貢献する", en: "contribute to" },
+    { jp: "高品質な映像", en: "high-quality images" },
+    { jp: "～を期待する", en: "expect" },
+    { jp: "～を最大化する", en: "maximize" },
+    { jp: "～する傾向がある", en: "tend to" },
+    { jp: "映画製作会社", en: "movie production companies" },
+    { jp: "莫大な予算", en: "huge budget" }
+];
+
+const sentenceData = [
+    { ja: "映画製作会社にとって収益を最大化することは不可欠です。", en: "It is essential for movie production companies to maximize revenue.", hint: "形式主語 It is... to (Income)" },
+    { ja: "売れている本を基に映画を作ることは、失敗のリスクを減らします。", en: "Making movies based on popular books reduces the risk of failure.", hint: "動名詞主語（Income/Quality）" },
+    { ja: "すでに多くのファンを持つ小説は、ヒットする可能性が高いです。", en: "Novels that already have many fans are likely to become hits.", hint: "関係代名詞 that (Income)" },
+    { ja: "観客は、お気に入りの物語が実写化されるのを見ることを期待しています。", en: "The audience expects to see their favorite stories turned into live-action.", hint: "不定詞 to see (Image)" },
+    { ja: "有名な原作を使うことで、会社は広告費を節約できます。", en: "By using famous original works, companies can save on advertising costs.", hint: "By + 動名詞 (Income)" },
+    { ja: "小説の質が高ければ、映画も素晴らしい脚本を持つことになります。", en: "If the quality of a novel is high, the movie will have an excellent script.", hint: "接合詞 If (Quality)" },
+    { ja: "最新技術により、監督は美しい映像を作ることができます。", en: "With the latest technology, directors can create beautiful images.", hint: "手段の With (Image)" },
+    { ja: "ヒット作を作ることは、映画業界全体の発展に貢献します。", en: "Creating hit movies contributes to the development of the film industry.", hint: "動名詞主語 (Income)" },
+    { ja: "原作ファンを惹きつけることは、経済的な成功につながります。", en: "Attracting original fans leads to financial success.", hint: "動名詞主語 (Income)" },
+    { ja: "良い物語を映画化することは、質の高い娯楽を提供するために重要です。", en: "Turning good stories into movies is important for providing high-quality entertainment.", hint: "動名詞主語 (Quality)" }
+];
+
+const praises = ["Great!", "Excellent!", "Perfect!", "Amazing!", "Good job!"];
+let currentMode = 'vocab', currentIdx = 0, userSentence = [], isChecking = false;
+
+function switchMode(mode) {
+    currentMode = mode; currentIdx = 0;
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + mode).classList.add('active');
+    loadQuestion();
+}
+
+function loadQuestion() {
+    isChecking = false; document.getElementById('resultMsg').textContent = ""; document.getElementById('hintDisplay').textContent = "";
+    const btn = document.getElementById('mainActionBtn'); btn.textContent = "Check Answer"; btn.disabled = true;
+    const area = document.getElementById('interactive-area'); area.innerHTML = "";
+
+    if (currentMode === 'vocab') {
+        const item = vocabData[currentIdx]; document.getElementById('questionText').textContent = item.jp;
+        const grid = document.createElement('div'); grid.className = "choices-grid";
+        [item.en, "ignore the plot", "increase the cost", "waste budget"].sort(() => Math.random() - 0.5).forEach(c => {
+            const b = document.createElement('button'); b.className = "choice-btn"; b.textContent = c;
+            b.onclick = () => { btn.disabled = false; document.getElementById('resultMsg').textContent = (c === item.en) ? praises[Math.floor(Math.random()*praises.length)] : "Try again!"; };
+            grid.appendChild(b);
+        });
+        area.appendChild(grid);
+    } else {
+        const item = sentenceData[currentIdx]; document.getElementById('questionText').textContent = item.ja;
+        document.getElementById('hintDisplay').textContent = "Grammar Hint: " + item.hint;
+        userSentence = []; const ansArea = document.createElement('div'); ansArea.className = "answer-area"; ansArea.id = "answerArea";
+        area.appendChild(ansArea);
+        const bank = document.createElement('div');
+        item.en.split(" ").sort(() => Math.random() - 0.5).forEach((w, i) => {
+            const b = document.createElement('button'); b.className = "word-btn"; b.textContent = w; b.id = "w"+i;
+            b.onclick = () => { if(!isChecking){ userSentence.push({text:w, id:b.id}); b.classList.add('used'); renderSentence(); btn.disabled=false; } };
+            bank.appendChild(b);
+        });
+        area.appendChild(bank);
+    }
+}
+
+function renderSentence() {
+    const area = document.getElementById('answerArea'); area.innerHTML = "";
+    userSentence.forEach((obj, i) => {
+        const s = document.createElement('div'); s.className = "answer-word"; s.textContent = obj.text;
+        s.onclick = () => { if(!isChecking){ document.getElementById(obj.id).classList.remove('used'); userSentence.splice(i, 1); renderSentence(); } };
+        area.appendChild(s);
+    });
+}
+
+function handleMainAction() {
+    if (!isChecking && currentMode === 'reorder') {
+        isChecking = true; document.querySelectorAll('.answer-word').forEach(b => b.classList.add('popped'));
+        document.getElementById('resultMsg').textContent = praises[Math.floor(Math.random()*praises.length)];
+        document.getElementById('mainActionBtn').textContent = "Next →";
+    } else {
+        const total = (currentMode === 'vocab' ? vocabData.length : sentenceData.length);
+        if(currentIdx < total - 1) { currentIdx++; loadQuestion(); }
+        else alert("Completed!");
+    }
+}
+
+// ページ読み込み時に印刷用リストを即作成する
+function setupPrintContent() {
+    const vList = document.getElementById('print-vocab-list');
+    vList.innerHTML = vocabData.map((d, i) => `<div class="vocab-row"><span class="vocab-jp">${i+1}. ${d.jp}</span><div class="vocab-line"></div></div>`).join('');
+    const sList = document.getElementById('print-sentence-list');
+    sList.innerHTML = sentenceData.map((d, i) => `<div class="print-item"><span class="print-q-text">${i+1}. ${d.ja}</span><span class="word-choices-box">( ${d.en.replace(/[.,]/g, "").split(" ").sort(() => Math.random() - 0.5).join(" / ")} )</span><div class="print-line-full"></div></div>`).join('');
+}
+
+window.onload = () => {
+    loadQuestion();
+    setupPrintContent(); // ここで最初に作っておく！
+};
+</script>
+</body>
+</html>
