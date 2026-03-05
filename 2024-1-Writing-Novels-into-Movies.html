@@ -14,7 +14,7 @@
         --base-font: "Hiragino Maru Gothic ProN", "Hiragino Maru Gothic Pro", "Yu Gothic", "Meiryo", sans-serif;
     }
 
-    /* --- Screen Styles (スマホ対応調整) --- */
+    /* --- Screen Styles --- */
     body { font-family: var(--base-font); background-color: var(--bg-pink); color: var(--text-dark); display: flex; flex-direction: column; align-items: center; padding: 10px; margin: 0; }
     header, .container { max-width: 900px; width: 100%; }
     h1 { font-size: 1.4rem; color: var(--deep-rose); border-bottom: 2px solid var(--accent-rose); display: inline-block; padding-bottom: 5px; text-align: center; margin: 10px 0; }
@@ -28,11 +28,9 @@
     .question-box { background: white; border-bottom: 3px solid var(--accent-rose); padding: 15px; border-radius: 12px; margin-bottom: 10px; min-height: 40px; display: flex; flex-direction: column; justify-content: center; align-items: center; font-size: 1rem; }
     .screen-hint { color: var(--deep-rose); font-size: 0.8rem; font-weight: bold; display: block; margin-top: 5px; background: #fff; padding: 2px 8px; border-radius: 8px; border: 1px solid var(--accent-rose); }
     
-    /* ボタンサイズの縮小 */
     .choices-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
     .choice-btn, .word-btn { background: white; color: var(--deep-rose); border: 1.5px solid var(--accent-rose); padding: 12px 8px; border-radius: 12px; font-size: 1.1rem; font-weight: bold; cursor: pointer; font-family: var(--base-font); }
     
-    /* 解答欄とバブルの高さ調整 */
     .answer-area { min-height: 60px; border: 2px dashed var(--accent-rose); border-radius: 12px; padding: 10px; margin-bottom: 15px; display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; align-items: center; }
     .answer-word { background: var(--deep-rose); color: white; padding: 5px 12px; border-radius: 8px; cursor: grab; font-size: 1.1rem; user-select: none; }
     .answer-word.popped { background: transparent !important; color: var(--text-dark) !important; border: none !important; font-size: 1.2rem !important; cursor: default !important; padding: 0 3px 0 0 !important; margin: 0 !important; display: inline !important; }
@@ -101,7 +99,6 @@
 </div>
 
 <script>
-// ① 並べ替え問題と完全に連動させた20語
 const vocabData = [
     { jp: "収益を最大化する", en: "maximize revenue" },
     { jp: "映画製作会社", en: "movie production companies" },
@@ -162,7 +159,16 @@ function loadQuestion() {
         const grid = document.createElement('div'); grid.className = "choices-grid";
         [item.en, "ignore the plot", "increase the cost", "waste budget"].sort(() => Math.random() - 0.5).forEach(c => {
             const b = document.createElement('button'); b.className = "choice-btn"; b.textContent = c;
-            b.onclick = () => { btn.disabled = false; document.getElementById('resultMsg').textContent = (c === item.en) ? praises[Math.floor(Math.random()*praises.length)] : "Try again!"; };
+            b.onclick = () => { 
+                btn.disabled = false;
+                if(c === item.en) {
+                    document.getElementById('resultMsg').style.color = "var(--deep-rose)";
+                    document.getElementById('resultMsg').textContent = praises[Math.floor(Math.random()*praises.length)];
+                } else {
+                    document.getElementById('resultMsg').style.color = "#888";
+                    document.getElementById('resultMsg').textContent = "Keep trying!";
+                }
+            };
             grid.appendChild(b);
         });
         area.appendChild(grid);
@@ -218,13 +224,28 @@ function getDragAfterElement(container, x) {
 }
 
 function handleMainAction() {
+    const btn = document.getElementById('mainActionBtn');
     if (!isChecking && currentMode === 'reorder') {
-        isChecking = true;
-        const area = document.getElementById('answerArea');
-        area.style.justifyContent = "flex-start"; area.style.border = "none"; area.style.gap = "0px";
-        document.querySelectorAll('.answer-word').forEach(b => { b.classList.add('popped'); b.draggable = false; });
-        document.getElementById('resultMsg').textContent = praises[Math.floor(Math.random()*praises.length)];
-        document.getElementById('mainActionBtn').textContent = "Next →";
+        const item = sentenceData[currentIdx];
+        const userArr = Array.from(document.querySelectorAll('.answer-word')).map(el => el.textContent);
+        const userSent = userArr.join(" ");
+        
+        // 正解チェック (カンマやピリオドを除去して比較)
+        const cleanCorrect = item.en.replace(/[.,]/g, "");
+        const cleanUser = userSent.replace(/[.,]/g, "");
+
+        if (cleanUser === cleanCorrect) {
+            isChecking = true;
+            const area = document.getElementById('answerArea');
+            area.style.justifyContent = "flex-start"; area.style.border = "none"; area.style.gap = "0px";
+            document.querySelectorAll('.answer-word').forEach(b => { b.classList.add('popped'); b.draggable = false; });
+            document.getElementById('resultMsg').style.color = "var(--deep-rose)";
+            document.getElementById('resultMsg').textContent = praises[Math.floor(Math.random()*praises.length)];
+            btn.textContent = "Next →";
+        } else {
+            document.getElementById('resultMsg').style.color = "#888";
+            document.getElementById('resultMsg').textContent = "Keep trying!";
+        }
     } else {
         const total = (currentMode === 'vocab' ? vocabData.length : sentenceData.length);
         if(currentIdx < total - 1) { currentIdx++; loadQuestion(); }
