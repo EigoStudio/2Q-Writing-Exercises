@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>英検2級 英作文対策 Pros 肯定</title>
+<style>
+    :root {
+        --bg-pros: #f0f9f4;
+        --accent-green: #68b0ab;
+        --deep-green: #2d6a4f;
+        --text-dark: #1b4332;
+        --base-font: "Hiragino Maru Gothic ProN", "Hiragino Maru Gothic Pro", "Yu Gothic", "Meiryo", sans-serif;
+    }
+
+    /* --- Screen Styles --- */
+    body { font-family: var(--base-font); background-color: var(--bg-pros); color: var(--text-dark); display: flex; flex-direction: column; align-items: center; padding: 10px; margin: 0; touch-action: manipulation; }
+    header, .container { max-width: 900px; width: 100%; }
+    h1 { font-size: 1.4rem; color: var(--deep-green); border-bottom: 2px solid var(--accent-green); display: inline-block; padding-bottom: 5px; text-align: center; margin: 10px 0; }
+    
+    .topic-box { background: white; padding: 15px; border-radius: 12px; border-left: 5px solid var(--accent-green); margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); font-size: 0.9rem; line-height: 1.5; }
+    .control-panel { display: flex; justify-content: center; gap: 15px; background: white; padding: 10px; border-radius: 50px; border: 1.5px solid var(--accent-green); margin-bottom: 15px; }
+    .tab-btn { padding: 6px 20px; border-radius: 20px; border: 1.5px solid var(--accent-green); background: transparent; color: var(--deep-green); cursor: pointer; font-weight: bold; font-family: var(--base-font); font-size: 0.9rem; }
+    .tab-btn.active { background: var(--accent-green); color: white; }
+    
+    .container { background: rgba(255, 255, 255, 0.8); padding: 20px 15px; border-radius: 20px; text-align: center; }
+    .question-box { background: white; border-bottom: 3px solid var(--accent-green); padding: 15px; border-radius: 12px; margin-bottom: 10px; min-height: 40px; display: flex; flex-direction: column; justify-content: center; align-items: center; font-size: 1rem; }
+    .screen-hint { color: var(--deep-green); font-size: 0.8rem; font-weight: bold; display: block; margin-top: 5px; background: #fff; padding: 2px 8px; border-radius: 8px; border: 1px solid var(--accent-green); }
+    
+    .choices-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+    .choice-btn, .word-btn { background: white; color: var(--deep-green); border: 1.5px solid var(--accent-green); padding: 12px 8px; border-radius: 12px; font-size: 1.1rem; font-weight: bold; cursor: pointer; font-family: var(--base-font); }
+    .choice-btn.correct-choice { background: var(--accent-green) !important; color: white !important; }
+    
+    .answer-area { min-height: 60px; border: 2px dashed var(--accent-green); border-radius: 12px; padding: 10px; margin-bottom: 15px; display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; align-items: center; position: relative; }
+    .answer-word { background: var(--deep-green); color: white; padding: 5px 12px; border-radius: 8px; cursor: grab; font-size: 1.1rem; user-select: none; touch-action: none; position: relative; z-index: 10; }
+    .answer-word.dragging { opacity: 0.5; }
+    .answer-word.popped { background: transparent !important; color: var(--text-dark) !important; border: none !important; font-size: 1.2rem !important; cursor: default !important; padding: 0 3px 0 0 !important; margin: 0 !important; display: inline !important; }
+
+    .word-btn.used { visibility: hidden; }
+    .action-btn { background: var(--deep-green); color: white; border: none; padding: 12px 40px; border-radius: 40px; font-weight: bold; cursor: pointer; font-family: var(--base-font); font-size: 1rem; }
+    .action-btn:disabled { background: #ccc; cursor: not-allowed; }
+
+    /* --- Print Styles (PDF用: 黒文字・シンプル) --- */
+    #print-area { display: none; }
+    @media print {
+        body { background: white !important; padding: 0 !important; }
+        .no-print, header, .container, .control-panel { display: none !important; }
+        #print-area { display: block !important; width: 100% !important; color: black !important; font-family: var(--base-font); }
+        .print-page { page-break-after: always; padding: 5mm; display: block !important; }
+        .print-header { border-bottom: 1px solid #000; margin-bottom: 10px; font-size: 1.0rem; font-weight: bold; }
+        .print-topic-sm { font-size: 0.85rem; padding: 0; margin-bottom: 15px; line-height: 1.3; border: none !important; }
+        .print-item { margin-bottom: 22px; }
+        .print-q-text { font-weight: normal; font-size: 0.85rem; margin-bottom: 2px; display: block; }
+        .word-choices-box { font-style: italic; font-size: 0.8rem; display: block; margin-bottom: 0px; }
+        .print-line-full { border-bottom: 0.5px solid #000; height: 1.8rem; width: 100%; }
+        .vocab-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 30px; }
+        .vocab-row { display: flex; align-items: flex-end; margin-bottom: 15px; }
+        .vocab-jp { min-width: 150px; font-size: 0.75rem; }
+        .vocab-line { border-bottom: 0.5px solid #000; flex-grow: 1; height: 2rem; }
+    }
+</style>
+</head>
+<body>
+
+<header class="no-print">
+    <h1>英検2級 英作文対策 Pros 肯定</h1>
+    <div class="topic-box">
+        <strong>【TOPIC】</strong> In Japan, some people say that famous tourist sites, such as castles and temples, should limit the number of visitors. Do you agree with this opinion? (Cleanliness / Local economies / Reputation)
+    </div>
+    <div class="control-panel">
+        <button class="tab-btn active" id="tab-vocab" onclick="switchMode('vocab')">Vocab</button>
+        <button class="tab-btn" id="tab-reorder" onclick="switchMode('reorder')">Sentences</button>
+    </div>
+</header>
+
+<div class="container no-print">
+    <div class="question-box">
+        <div id="questionText">Loading...</div>
+        <div id="hintDisplay" class="screen-hint"></div>
+    </div>
+    <div id="interactive-area"></div>
+    <div id="resultMsg" style="margin: 10px; font-size: 1.2rem; font-weight: bold; min-height: 1.5rem;"></div>
+    <button class="action-btn" id="mainActionBtn" onclick="handleMainAction()" disabled>Check Answer</button>
+    <br>
+    <button onclick="window.print()" style="margin-top:20px; background:none; border:none; text-decoration:underline; cursor:pointer; color:var(--deep-green); font-size: 0.8rem;">
+        ワークシートを印刷する
+    </button>
+</div>
+
+<div id="print-area">
+    <div class="print-page">
+        <div class="print-header">Vocabulary Worksheet (Pros)</div>
+        <div class="print-topic-sm"><b>Topic:</b> In Japan, some people say that famous tourist sites, such as castles and temples, should limit the number of visitors. Do you agree with this opinion?</div>
+<div class="print-topic-sm"><b>Points:</b> Cleanliness / Local economies / Reputation</div>
+        <div id="print-vocab-list" class="vocab-grid"></div>
+    </div>
+    <div class="print-page">
+        <div class="print-header">Sentence Structure Worksheet (Pros)</div>
+        <div class="print-topic-sm"><b>Points:</b> Cleanliness / Local economies / Reputation</div>
+        <div id="print-sentence-list"></div>
+    </div>
+</div>
+
+<script>
+const vocabData = [
+    { jp: "～の数を制限する", en: "limit the number of" },
+    { jp: "歴史的建造物", en: "historical structures" },
+    { jp: "～を維持する", en: "maintain" },
+    { jp: "清潔さ", en: "cleanliness" },
+    { jp: "ポイ捨て", en: "littering" },
+    { jp: "混雑を避ける", en: "avoid overcrowding" },
+    { jp: "観光体験", en: "sightseeing experience" },
+    { jp: "質の高いサービス", en: "high-quality service" },
+    { jp: "～を保護する", en: "preserve" },
+    { jp: "～の評判を高める", en: "improve the reputation of" },
+    { jp: "地元の経済", en: "local economies" },
+    { jp: "持続可能な観光", en: "sustainable tourism" },
+    { jp: "～を妨げる、防ぐ", en: "prevent" },
+    { jp: "損傷、ダメージ", en: "damage" },
+    { jp: "マナーの悪い観光客", en: "ill-mannered tourists" },
+    { jp: "～にプラスの影響を与える", en: "have a positive impact on" },
+    { jp: "一人当たりの支出", en: "spending per person" },
+    { jp: "文化遺産", en: "cultural heritage" },
+    { jp: "過度な、過剰な", en: "excessive" },
+    { jp: "～する価値がある", en: "be worth doing" }
+];
+
+const sentenceData = [
+    { ja: "観光客の数を制限することは、寺院の清潔さを維持するために重要です。", en: "Limiting the number of tourists is important to maintain the cleanliness of temples.", hint: "動名詞主語 (Cleanliness)" },
+    { ja: "入場制限をすることで、歴史的建造物を損傷から守ることができます。", en: "By limiting visitors, we can protect historical structures from damage.", hint: "By + 動名詞 / protect A from B (Reputation)" },
+    { ja: "混雑が少なければ、観光客は質の高い体験を楽しむことができます。", en: "If there is less overcrowding, tourists can enjoy a high-quality experience.", hint: "接続詞 If (Reputation)" },
+    { ja: "訪問者数を抑えることは、観光地の評判を良くするのに役立ちます。", en: "Reducing the number of visitors helps improve the reputation of tourist sites.", hint: "help + 原形不定詞 (Reputation)" },
+    { ja: "観光客の制限は、ポイ捨て問題を解決する良い方法です。", en: "Limiting tourists is a good way to solve the problem of littering.", hint: "不定詞の形容詞的用法 (Cleanliness)" },
+    { ja: "地元の経済にとって、観光客の量より質を重視することは不可欠です。", en: "It is essential for local economies to focus on quality rather than quantity.", hint: "形式主語 It is... for A to do (Local economies)" },
+    { ja: "少数の観光客がより多くのお金を使うことで、地元経済は活性化します。", en: "Local economies will grow if a smaller number of tourists spend more money.", hint: "接続詞 If (Local economies)" },
+    { ja: "過度な混雑は、歴史的建造物の価値を台無しにする可能性があります。", en: "Excessive overcrowding might ruin the value of cultural heritage.", hint: "助動詞 might (Reputation)" },
+    { ja: "したがって、私は有名な観光地は入場制限をすべきだと考えます。", en: "Therefore, I believe that famous tourist sites should limit visitors.", hint: "結論の Therefore / I believe that" },
+    { ja: "私たちの文化遺産は、将来の世代のために保護される価値があります。", en: "Our cultural heritage is worth preserving for future generations.", hint: "be worth doing (Reputation)" }
+];
+
+const vocabPraises = ["Nice!", "Correct!", "Perfect!", "Good!", "Great!"];
+const sentPraises = ["Well argued!", "Good perspective!", "Excellent logic!", "Perfect sentence!"];
+
+let currentMode = 'vocab', currentIdx = 0, isChecking = false;
+let touchElement = null;
+
+function switchMode(mode) {
+    currentMode = mode; currentIdx = 0;
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + mode).classList.add('active');
+    loadQuestion();
+}
+
+function loadQuestion() {
+    isChecking = false;
+    document.getElementById('resultMsg').textContent = "";
+    const hintArea = document.getElementById('hintDisplay');
+    hintArea.textContent = "";
+    hintArea.style.display = (currentMode === 'vocab') ? "none" : "block";
+
+    const btn = document.getElementById('mainActionBtn');
+    btn.textContent = (currentMode === 'vocab') ? "Next →" : "Check Answer";
+    btn.disabled = true;
+    const area = document.getElementById('interactive-area');
+    area.innerHTML = "";
+
+    if (currentMode === 'vocab') {
+        const item = vocabData[currentIdx];
+        document.getElementById('questionText').textContent = item.jp;
+        const grid = document.createElement('div'); grid.className = "choices-grid";
+        [item.en, "ignore the rules", "increase the trash", "destroy the area"].sort(() => Math.random() - 0.5).forEach(c => {
+            const b = document.createElement('button'); b.className = "choice-btn"; b.textContent = c;
+            b.onclick = () => {
+                if(isChecking) return;
+                if(c === item.en) {
+                    isChecking = true;
+                    b.classList.add('correct-choice');
+                    document.getElementById('resultMsg').style.color = "var(--deep-green)";
+                    document.getElementById('resultMsg').textContent = vocabPraises[Math.floor(Math.random()*vocabPraises.length)];
+                    btn.disabled = false;
+                } else {
+                    document.getElementById('resultMsg').style.color = "#888";
+                    document.getElementById('resultMsg').textContent = "Try again!";
+                }
+            };
+            grid.appendChild(b);
+        });
+        area.appendChild(grid);
+    } else {
+        const item = sentenceData[currentIdx];
+        document.getElementById('questionText').textContent = item.ja;
+        hintArea.textContent = "Grammar Hint: " + item.hint;
+        const ansArea = document.createElement('div'); ansArea.className = "answer-area"; ansArea.id = "answerArea";
+        ansArea.addEventListener('dragover', e => {
+            if (isChecking) return; e.preventDefault();
+            const dragging = document.querySelector('.dragging');
+            const afterElement = getDragAfterElement(ansArea, e.clientX);
+            if (afterElement == null) ansArea.appendChild(dragging);
+            else ansArea.insertBefore(dragging, afterElement);
+        });
+        area.appendChild(ansArea);
+        const bank = document.createElement('div');
+        item.en.split(" ").sort(() => Math.random() - 0.5).forEach((w, i) => {
+            const b = document.createElement('button'); b.className = "word-btn"; b.textContent = w; b.id = "w"+i;
+            b.onclick = () => { if(!isChecking){ addWordToAnswer(w, b.id); b.classList.add('used'); btn.disabled=false; } };
+            bank.appendChild(b);
+        });
+        area.appendChild(bank);
+    }
+}
+
+function addWordToAnswer(text, id) {
+    const area = document.getElementById('answerArea');
+    const s = document.createElement('div');
+    s.className = "answer-word"; s.textContent = text; s.id = "ans-" + id; s.draggable = true;
+    s.onclick = () => { if (isChecking) return; document.getElementById(id).classList.remove('used'); s.remove(); if (area.children.length === 0) document.getElementById('mainActionBtn').disabled = true; };
+    s.addEventListener('dragstart', () => { if (!isChecking) s.classList.add('dragging'); });
+    s.addEventListener('dragend', () => { s.classList.remove('dragging'); });
+    s.addEventListener('touchstart', (e) => { if (isChecking) return; touchElement = s; s.classList.add('dragging'); }, {passive: true});
+    s.addEventListener('touchmove', (e) => {
+        if (isChecking || !touchElement) return;
+        e.preventDefault();
+        const touch = e.touches[0];
+        const afterElement = getDragAfterElement(area, touch.clientX);
+        if (afterElement == null) area.appendChild(touchElement);
+        else area.insertBefore(touchElement, afterElement);
+    }, {passive: false});
+    s.addEventListener('touchend', () => { if (isChecking) return; s.classList.remove('dragging'); touchElement = null; });
+    area.appendChild(s);
+}
+
+function getDragAfterElement(container, x) {
+    const draggableElements = [...container.querySelectorAll('.answer-word:not(.dragging)')];
+    return draggableElements.reduce((closest, child) => {
+        const box = child.getBoundingClientRect();
+        const offset = x - box.left - box.width / 2;
+        if (offset < 0 && offset > closest.offset) return { offset: offset, element: child };
+        else return closest;
+    }, { offset: Number.NEGATIVE_INFINITY }).element;
+}
+
+function handleMainAction() {
+    const btn = document.getElementById('mainActionBtn');
+    if (currentMode === 'reorder' && !isChecking) {
+        const item = sentenceData[currentIdx];
+        const userSent = Array.from(document.querySelectorAll('.answer-word')).map(el => el.textContent).join(" ");
+        const cleanCorrect = item.en.replace(/[.,]/g, "").toLowerCase().trim();
+        const cleanUser = userSent.replace(/[.,]/g, "").toLowerCase().trim();
+        if (cleanUser === cleanCorrect) {
+            isChecking = true;
+            const area = document.getElementById('answerArea');
+            area.style.justifyContent = "flex-start"; area.style.border = "none"; area.style.gap = "0px";
+            document.querySelectorAll('.answer-word').forEach(b => { b.classList.add('popped'); b.draggable = false; });
+            document.getElementById('resultMsg').style.color = "var(--deep-green)";
+            document.getElementById('resultMsg').textContent = sentPraises[Math.floor(Math.random()*sentPraises.length)];
+            btn.textContent = "Next →";
+        } else {
+            document.getElementById('resultMsg').style.color = "#888";
+            document.getElementById('resultMsg').textContent = "Keep trying!";
+        }
+    } else {
+        const data = (currentMode === 'vocab' ? vocabData : sentenceData);
+        if(currentIdx < data.length - 1) { currentIdx++; loadQuestion(); }
+        else alert("Pros Part Completed!");
+    }
+}
+
+function setupPrintContent() {
+    const vList = document.getElementById('print-vocab-list');
+    vList.innerHTML = vocabData.map((d, i) => `<div class="vocab-row"><span class="vocab-jp">${i+1}. ${d.jp}</span><div class="vocab-line"></div></div>`).join('');
+    const sList = document.getElementById('print-sentence-list');
+    sList.innerHTML = sentenceData.map((d, i) => `<div class="print-item"><span class="print-q-text">${i+1}. ${d.ja}</span><span class="word-choices-box">( ${d.en.replace(/[.,]/g, "").split(" ").sort(() => Math.random() - 0.5).join(" / ")} )</span><div class="print-line-full"></div></div>`).join('');
+}
+
+window.onload = () => { loadQuestion(); setupPrintContent(); };
+</script>
+</body>
+</html>
